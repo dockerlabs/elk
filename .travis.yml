@@ -11,11 +11,9 @@ before_install:
 
 install:
   - sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  - git clone https://github.com/docker-library/official-images.git ~/official-images
 
 script:
-  - make up
-  - ~/official-images/test/run.sh logs/logstash
+  - docker-compose build
 
 after_script:
   - docker ps
