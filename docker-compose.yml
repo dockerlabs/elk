@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+
+  elasticsearch:
+    build: elasticsearch/
+    image: logs/elasticsearch
+    container_name: logs.elasticsearch
+    ports:
+      - 127.0.0.1:9200:9200
+      - 127.0.0.1:9300:9300
+    environment:
+      ES_JAVA_OPTS: '-Xmx256m -Xms256m'
+      # disable X-Pack
+      xpack.security.enabled: 'false'
+      xpack.monitoring.enabled: 'false'
+      xpack.graph.enabled: 'false'
+      xpack.watcher.enabled: 'false'
+    networks:
+      - elk
+
+  logstash:
+    build: logstash/
+    image: logs/logstash
+    container_name: logs.logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - 5010:5010
+      - 5020:5020
+    environment:
+      LS_JAVA_OPTS: '-Xmx256m -Xms256m'
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build: kibana/
+    image: logs/kibana
+    container_name: logs.kibana
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config
+    ports:
+      - 127.0.0.1:5601:5601
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+
+  elk:
+    driver: bridge
