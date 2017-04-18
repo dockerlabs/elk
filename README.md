@@ -1,5 +1,7 @@
 # Docker ELK
 
+[![Build Status](https://travis-ci.org/dockerlabs/elk.svg?branch=master)](https://travis-ci.org/dockerlabs/elk)
+
 ### Increase vm.max_map_count
 
 ```sh
